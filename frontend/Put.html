@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Obtener por id y actualizar empleado</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+  <style>
+    .error {
+      color: red;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid bg-warning py-1">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-warning">
+      <div class="container">
+        <a class="navbar-brand" href="#">Empresa</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="GetAll.html">Empleados</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Post.html">Crear Empleado</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled active" href="Put.html">Actualizar Empleado</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Delete.html">Eliminar Empleado</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container p-3">
+    <form id="formularioBuscar" class="py-3">
+      <div class="row">
+        <div class="mb-3">
+          <label for="txtIdBuscar" class="form-label">ID Para buscar</label>
+          <input type="text" name="idBuscar" class="form-control" id="txtIdBuscar">
+        </div>
+      </div>
+      <button onclick="obtenerEmpleadoPorId()" class="btn btn-primary text-white">Buscar Empleado</button>
+    </form>
+
+    <form id="formulario">
+      <div class="row">
+
+        <div class="col-md-6">
+
+          <div class="mb-3">
+            <label for="txtId" class="form-label">ID</label>
+            <input type="text" name="id" class="form-control" id="txtId" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label for="txtNombre" class="form-label">Nombre</label>
+            <input type="text" name="nombre" class="form-control" id="txtNombre">
+          </div>
+
+          <div class="mb-3">
+            <label for="txtDni" class="form-label">DNI</label>
+            <input type="text" name="dni" class="form-control" id="txtDni">
+          </div>
+
+          <div class="mb-3">
+            <label for="cargo" class="form-label">Cargo:</label>
+            <select name="cargo" id="cargo" class="form-control">
+              <option value="">Seleccione un cargo</option>
+              <option value="6f3eca70-ad58-40c7-b348-5426562e1a2b">Jefe</option>
+              <option value="8b0be899-d1a9-4041-92c8-d000ffdc1c20">Docente</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="txtApellido" class="form-label">Apellido</label>
+            <input type="text" name="apellido" class="form-control" id="txtApellido">
+          </div>
+
+          <div class="mb-3">
+            <label for="sucursal" class="form-label">Sucursal:</label>
+            <select name="sucursal" id="sucursal" class="form-control">
+              <option value="">Seleccione una sucursal</option>
+              <option value="7d777aa1-fdbc-4ed1-891b-f5ff7efbd179">Nueva cba</option>
+              <option value="179da377-68e8-471a-a730-8eb66e892530">Centro</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="jefe" class="form-label">Jefe:</label>
+            <select name="jefe" id="jefe" class="form-control">
+              <option value="">Seleccione una jefe</option>
+              <option value="9100cb56-946b-4eb7-8242-79e135f2e80d">Marcelo</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="txtFecha" class="form-label">Fecha</label>
+            <input type="datetime" name="fecha" class="form-control" id="txtFecha" readonly>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-warning text-white">Actualizar Empleado</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+    crossorigin="anonymous"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+
+  <script>
+    function obtenerEmpleadoPorId() {
+      event.preventDefault();
+      var idBuscar = $("#txtIdBuscar").val();
+
+      $.ajax({
+        url: "https://localhost:7221/api/Empleado/" + idBuscar,
+        type: "GET",
+        success: function (response) {
+          console.log(response);
+          if (response.statusCode === 200) {
+            document.getElementById("txtId").value = response.id;
+            document.getElementById("txtNombre").value = response.nombre;
+            document.getElementById("txtApellido").value = response.apellido;
+
+            document.getElementById("cargo").value = response.cargo.id;
+            document.getElementById("sucursal").value = response.sucursal.id;
+            if (response.jefe !== null) {
+              document.getElementById("jefe").value = response.jefe.id;
+            } else {
+              document.getElementById("jefe").value = ""
+            }
+
+            document.getElementById("txtDni").value = response.dni;
+            document.getElementById("txtFecha").value = response.fechaAlta;
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Error: " + response.errorMessage,
+              text: "Ocurrio un error al intentar obtener el empleado"
+            });
+          }
+        },
+        error: function (response) {
+          Swal.fire({
+            icon: "error",
+            title: "Error: " + response.errorMessage,
+            text: "Ocurrio un error al intentar obtener el empleado"
+          });
+        }
+      });
+    }
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $("#formulario").validate({
+        rules: {
+          nombre: "required",
+          apellido: "required",
+          cargo: "required",
+          sucursal: "required",
+          dni: "required",
+        },
+        messages: {
+          nombre: "Ingrese el nombre",
+          apellido: "Ingrese el apellido",
+          cargo: "Seleccione un cargo",
+          sucursal: "Seleccione una sucursal",
+          dni: "Ingrese el dni",
+        }
+      });
+
+      $("#formulario").submit(function (event) {
+        event.preventDefault();
+        actualizarEmpleado();
+      });
+    });
+
+    function actualizarEmpleado() {
+      var id = $("#txtId").val();
+      var nombre = $("#txtNombre").val();
+      var apellido = $("#txtApellido").val();
+      var cargo = $("#cargo").val();
+      var sucursal = $("#sucursal").val();
+      var dni = $("#txtDni").val();
+      var jefe = $("#jefe").val();
+
+      if (!nombre || !apellido || !cargo || !sucursal || !dni) {
+        console.log(nombre, apellido, cargo, sucursal, dni);
+        Swal.fire({
+          icon: "error",
+          title: "Debe completar todos los inputs!"
+        });
+        return;
+      }
+
+      var empleado = {
+        id: id,
+        nombre: nombre,
+        apellido: apellido,
+        cargoId: cargo,
+        sucursalId: sucursal,
+        dni: dni,
+      };
+
+      if (jefe.trim() !== "") {
+        empleado.JefeId = jefe;
+      }
+
+      $.ajax({
+        url: "https://localhost:7221/api/Empleado",
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify(empleado),
+        success: function (response) {
+          console.log(response)
+          if (response.statusCode === 200) {
+
+            $("#txtId").val("");
+            $("#txtNombre").val("");
+            $("#txtApellido").val("");
+            $("#cargo").val("");
+            $("#sucursal").val("");
+            $("#txtDni").val("");
+            $("#jefe").val("");
+            $("#txtNombre").val("");
+            $("#txtFecha").val("");
+
+            Swal.fire({
+              icon: "success",
+              title: "Empleado actualizado con exito",
+              text: "El empleado se ha actualizado exitosamente"
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: response.ErorMessage,
+              text: "Ocurrio un error al intentar actualizar el empleado"
+            });
+          }
+        },
+        error: function () {
+          Swal.fire({
+            icon: "error",
+            title: "Error al actualizar el empleado",
+            text: "Ocurrio un error al intentar actualizar el empleado"
+          });
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
